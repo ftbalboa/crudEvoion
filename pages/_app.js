@@ -2,7 +2,6 @@ import { createGlobalStyle, ThemeProvider } from "styled-components";
 
 const GlobalStyle = createGlobalStyle`
 html{
-  box-sizing: border-box;
   background: #F5F4F0;
   display:block;
   height: 100%;
@@ -18,6 +17,16 @@ body{
   margin-top:0;
   font-family:Verdana;
 }
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 `;
 
 const theme = {
@@ -28,12 +37,13 @@ const theme = {
 
 function MyApp({ Component, pageProps }) {
   return (
-  <>
-  <GlobalStyle />
-  <ThemeProvider theme={theme}>
-  <Component {...pageProps} />
-  </ThemeProvider>
-  </>)
+    <>
+      <GlobalStyle />
+      <ThemeProvider theme={theme}>
+        <Component {...pageProps} />
+      </ThemeProvider>
+    </>
+  );
 }
 
-export default MyApp
+export default MyApp;
