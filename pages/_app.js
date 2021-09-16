@@ -1,4 +1,5 @@
 import { createGlobalStyle, ThemeProvider } from "styled-components";
+import Nav from "../components/Nav";
 
 const GlobalStyle = createGlobalStyle`
 html{
@@ -31,7 +32,8 @@ a {
 
 const theme = {
   colors: {
-    primary: "#fafafa",
+    primary: "plum",
+    textSecondary:"#fafafa",
   },
 };
 
@@ -40,6 +42,7 @@ function MyApp({ Component, pageProps }) {
     <>
       <GlobalStyle />
       <ThemeProvider theme={theme}>
+      <Nav />
         <Component {...pageProps} />
       </ThemeProvider>
     </>
