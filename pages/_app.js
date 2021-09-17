@@ -1,5 +1,13 @@
+import { createContext, useState } from "react";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
 import Nav from "../components/Nav";
+
+const theme = {
+  colors: {
+    primary: "plum",
+    textSecondary: "#fafafa",
+  },
+};
 
 const GlobalStyle = createGlobalStyle`
 html{
@@ -30,20 +38,21 @@ a {
 
 `;
 
-const theme = {
-  colors: {
-    primary: "plum",
-    textSecondary:"#fafafa",
-  },
-};
+export const userContext = createContext({
+  user: false,
+  setUser: (u) => {}
+});
 
 function MyApp({ Component, pageProps }) {
+  const [user, setUser] = useState(false);
   return (
     <>
       <GlobalStyle />
       <ThemeProvider theme={theme}>
-      <Nav />
-        <Component {...pageProps} />
+        <userContext.Provider value={{user, setUser}}>
+          <Nav />
+          <Component {...pageProps} />
+        </userContext.Provider>
       </ThemeProvider>
     </>
   );
