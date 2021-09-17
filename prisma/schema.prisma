@@ -1,5 +1,4 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// Config
 
 datasource db {
   provider = "postgresql"
@@ -8,4 +7,29 @@ datasource db {
 
 generator client {
   provider = "prisma-client-js"
+}
+
+// Modelos
+
+model User {
+  id        Int     @id @default(autoincrement())
+  email     String  @unique
+  password  String
+  firstName String
+  lastName  String
+  Post      Post[]
+
+  @@map("Users")
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  authorId  Int
+  author    User?    @relation(fields: [authorId], references: [id])
+
+  @@map("Posts")
 }
