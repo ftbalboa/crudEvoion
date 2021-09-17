@@ -10,7 +10,7 @@ export default function Feed (){
     }, [user])
     return (
         <div>
-        <h1>Hi from Feed</h1>
+        <span>{`Bienvenido ${user.firstName} ${user.lastName}`}</span>
         <button onClick={()=> setUser(false)}>Logout</button>
         </div>
     )
