@@ -6,7 +6,9 @@ const getUserByEmail = async (req, res) => {
     const user = await prisma.user.findFirst({
       where: { email: email },
     });
-    return res.json(user);
+    if(user.password === password){
+    return res.json(user);}
+    else return res.status(404).json("userNotFound");
   } catch (error) {
     console.log(error);
     return res.status(500).json(error);
