@@ -49,7 +49,7 @@ Se realizaron dos pequeños test ínfimos. Únicamente testeando el renderizado 
 
 y luego realizar por consola 
 
-    npm ruin test
+    npm run test
 
 ## Ejecución
 
@@ -87,10 +87,8 @@ Fue realizado en 1366 x 768 y escala en resoluciones menores, en mayores los com
 ## Capturas
 
 ###
-![ejemplo](/src/assets/Readme/Capture1.PNG)
+![ejemplo](assets/Capture1.png)
 ###
-![ejemplo](/src/assets/Readme/Capture2.PNG)
+![ejemplo](assets/Capture2.png)
 ###
-![ejemplo](/src/assets/Readme/Capture3.PNG)
-###
-![ejemplo](/src/assets/Readme/Capture4.PNG)
+![ejemplo](assets/Capture3.png)
