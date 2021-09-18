@@ -17,7 +17,7 @@ const Container = styled.div`
     display: flex;
     aling-items: center;
     justify-content:center;
-    color: ${(props) => props.theme.colors.primary};
+    color: inherit;
     margin: 0 0 10px 0;
   }
   form {
