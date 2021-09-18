@@ -70,7 +70,7 @@ export default function Feed() {
         style={{ visibility: newPost === -1 ? "hidden" : "visible" }}
         onClick={() => setNewPost(-1)}
       >
-        Nuevo Post
+        Nuevo
       </button>
 
       <button onClick={() => setUser(false)}>Logout</button>
