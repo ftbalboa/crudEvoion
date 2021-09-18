@@ -11,18 +11,20 @@ import { userContext } from "../pages/_app";
     - Numero de orden
 */
 
-const Container = styled.div`
+const Container = styled.div.attrs((props) => ({
+    color: props.color || props.theme.colors.primary,
+  }))`
   background-color: transparent;
-  color: ${(props) => props.theme.colors.primary};
+  color: ${(props) => props.color};
   width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border: 2px solid ${(props) => props.theme.colors.primary};
+  border: 2px solid ${(props) => props.color};
   border-radius: 20px;
   h2 {
-    color: ${(props) => props.theme.colors.primary};
+    color: ${(props) => props.color};
   }
   form {
     display: flex;
@@ -32,15 +34,15 @@ const Container = styled.div`
   }
   input {
     margin: 5px;
-    border: 2px solid ${(props) => props.theme.colors.primary};
+    border: 2px solid ${(props) => props.color};
     border-radius: 50px;
     height: 1.5rem;
     padding: 0 1rem 0 1rem;
   }
   button {
-    border: 2px solid ${(props) => props.theme.colors.primary};
+    border: 2px solid ${(props) => props.color};
     border-radius: 50px;
-    color: ${(props) => props.theme.colors.primary};
+    color: ${(props) => props.color};
     background-color: ${(props) => props.theme.colors.textSecondary};
     cursor: pointer;
     width: 80px;
@@ -48,7 +50,7 @@ const Container = styled.div`
     margin: 5px;
     &:hover {
       color: ${(props) => props.theme.colors.textSecondary};
-      background-color: ${(props) => props.theme.colors.primary};
+      background-color: ${(props) => props.color};
     }
   }
 `;
@@ -56,47 +58,70 @@ const Container = styled.div`
 export function EditPost({ info }) {
   const { user, setUser } = useContext(userContext);
   const [input, setInput] = useState({
-    title: "",
-    content: "",
-    img: "",
-    color: "blue",
-    pinned: false,
-    order: 0,
+    title: info.title || "",
+    content: info.content || "",
+    img: info.img || "",
+    color: info.color || "blue",
+    pinned: info.pinned || false,
+    order: info.order || 0,
   });
   const [errors, setErrors] = useState({});
   const handleInput = (event) => {
     let newInput = { ...input };
-    switch(event.target.name){
-        case "pinned":
-            newInput[event.target.name] = !(input[event.target.name]);
-            break;
-        default:
-            newInput[event.target.name] = event.target.value;
-            break;
+    switch (event.target.name) {
+      case "pinned":
+        newInput[event.target.name] = !input[event.target.name];
+        break;
+      default:
+        newInput[event.target.name] = event.target.value;
+        break;
     }
     setInput({ ...newInput });
   };
-  useEffect(() => {
-    console.log(input);
-  }, [input]);
+
   const onSubmit = (e) => {
     e.preventDefault();
-    if(!info.id){
-        fetch("/api/posts", {
-            method: "POST",
-            body: JSON.stringify({ ...input, email: user.email }),
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }).then((res) =>
-            res.json().then((resJson) => {
-              console.log(resJson);
-            })
-          ).catch((e)=>{console.log(e)});
+    if (!info.id) {
+      fetch("/api/posts", {
+        method: "POST",
+        body: JSON.stringify({ ...input, email: user.email }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((res) =>
+          res.json().then((resJson) => {
+            info.refresh(true);
+          })
+        )
+        .catch((e) => {
+          console.log(e);
+        });
+    } else {
+        let objPut = {};
+        for (const key in input){
+            if(input[key] != info.key) objPut[key] = input[key]
+        } 
+      fetch("/api/posts", {
+        method: "PUT",
+        body: JSON.stringify({ ...objPut, id: info.id }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((res) =>
+          res.json().then((resJson) => {
+            info.refresh(true);
+          })
+        )
+        .catch((e) => {
+          console.log(e);
+        });
     }
   };
   return (
-    <Container>
+    <Container color={input.color}>
+    <h2>{info.id?  `Editando post "${info.title}"` : "Crear post"}</h2>
       <form onSubmit={onSubmit}>
         <label>Titulo</label>
         <input
@@ -113,24 +138,19 @@ export function EditPost({ info }) {
           value={input.content}
         />
         <label>Imagen Url</label>
-        <input
-          type="url"
-          name="img"
-          onChange={handleInput}
-          value={input.img}
-        />
+        <input type="url" name="img" onChange={handleInput} value={input.img} />
         <label>Color</label>
         <select name="color" onChange={handleInput} value={input.color}>
           <option value="blue">Blue</option>
-          <option value="value2">Value 2</option>
-          <option value="value3">Value 3</option>
+          <option value="plum">Plum</option>
+          <option value="red">Red</option>
         </select>
         <label>Importante</label>
         <input
           type="checkbox"
           name="pinned"
           onChange={handleInput}
-          checked = {input.pinned}
+          checked={input.pinned}
         />
         <label>N de orden</label>
         <input
@@ -140,8 +160,14 @@ export function EditPost({ info }) {
           value={input.order}
         />
         <button type="submit">SAVE</button>
-        <button>CANCEL</button>
       </form>
+      <button
+        onClick={() => {
+          info.refresh(true);
+        }}
+      >
+        CANCEL
+      </button>
     </Container>
   );
 }

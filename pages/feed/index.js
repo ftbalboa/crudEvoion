@@ -4,29 +4,82 @@ import { EditPost } from "../../components/EditPost";
 import { Post } from "../../components/Post";
 import { userContext } from "../_app";
 
-export default function Feed (){
-    const {user, setUser} = useContext(userContext);
-    const [posts, setPosts] = useState([]);
-    const [refresh, setRefresh] = useState(true);
-    const router = useRouter();
-    useEffect(() => {
-        if(!user) router.push('/', undefined, { shallow: true })
-        else{
-            if(refresh){
-                setRefresh(false);
-                fetch(`/api/posts?email=${user.email}`).then((res) =>
-                    res.json().then((resJson) => {
-                      setPosts(resJson);
-                    })
-                  ).catch((e)=>{console.log(e)});
-            }
-        }
-    }, [user, refresh])
-    return (
-        <div>
-        <span>{`Bienvenido ${user.firstName} ${user.lastName}`}</span>
-        <button onClick={()=> setUser(false)}>Logout</button>
-        {posts.map((p, i) => <Post info={{...p,refresh:setRefresh}} key={i}/>)}
-        </div>
-    )
+export default function Feed() {
+  const { user, setUser } = useContext(userContext);
+  const [posts, setPosts] = useState([]);
+  const [refresh, setRefresh] = useState(true);
+  const [newPost, setNewPost] = useState(-2);
+  const router = useRouter();
+  useEffect(() => {
+    if (!user) router.push("/", undefined, { shallow: true });
+    else {
+      if (refresh) {
+        setRefresh(false);
+        fetch(`/api/posts?email=${user.email}`)
+          .then((res) =>
+            res.json().then((resJson) => {
+              setPosts(resJson);
+              setNewPost(-2);
+            })
+          )
+          .catch((e) => {
+            console.log(e);
+          });
+      }
+    }
+  }, [user, refresh]);
+
+  const deletePost = (id) => {
+    fetch("/api/posts", {
+      method: "DELETE",
+      body: JSON.stringify({ id: id }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => setRefresh(true))
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
+  const editPost = (i) => {
+    setNewPost(i);
+  };
+
+  return (
+    <div>
+      <span>{`Bienvenido ${user.firstName} ${user.lastName}`}</span>
+      <button onClick={() => setUser(false)}>Logout</button>
+      {newPost !== -1 && (
+        <button onClick={() => setNewPost(-1)}>Nuevo Post</button>
+      )}
+      {newPost === -1 && <EditPost info={{ refresh: setRefresh }} />}
+      {posts.map((p, i) =>
+        i === newPost ? (
+          <EditPost
+            info={{
+              ...p,
+              refresh: setRefresh,
+              delete: deletePost,
+              index: i,
+              edit: setNewPost,
+            }}
+            key={i}
+          />
+        ) : (
+          <Post
+            info={{
+              ...p,
+              refresh: setRefresh,
+              delete: deletePost,
+              index: i,
+              edit: setNewPost,
+            }}
+            key={i}
+          />
+        )
+      )}
+    </div>
+  );
 }

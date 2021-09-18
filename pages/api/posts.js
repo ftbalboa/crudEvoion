@@ -50,10 +50,16 @@ const getPostsByUser = async (req, res) => {
 
 const putPostById = async (req, res) => {
   const { id } = req.body;
-  const keys = ["title", "content"];
+  const keys = ["title", "content", "img", "pinned", "color", "order"];
   let obj = {};
   keys.forEach((key) => {
-    if (req.body[key]) obj[key] = req.body[key];
+    if (req.body[key]) {
+      if (req.body[key] === "pinned") {
+        obj[key] = Boolean(req.body[key]);
+      } else if (req.body[key] === "order") {
+        obj[key] = Number(req.body[key]);
+      } else obj[key] = req.body[key];
+    }
   });
   try {
     const post = await prisma.post.update({
@@ -87,7 +93,6 @@ const deletePostById = async (req, res) => {
 export default function handler(req, res) {
   if (req.method === "POST") {
     if (req.body.email) {
-      console.log("here");
       return postPostByUser(req, res);
     } else {
       return res.status(200).json({ error: "Credenciales incorrectas" });

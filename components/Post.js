@@ -31,7 +31,7 @@ const Container = styled.div.attrs((props) => ({
   border: 2px solid ${(props) => props.color};
   border-radius: 20px;
   overflow: hidden;
-  margin: 10px;
+  margin: 10px 0 10PX 0;
   h2 {
     color: ${(props) => props.color};
   }
@@ -74,51 +74,6 @@ const Container = styled.div.attrs((props) => ({
 `;
 
 export function Post({ info }) {
-  const { user, setUser } = useContext(userContext);
-  const [input, setInput] = useState({
-    title: "",
-    content: "",
-    img: "",
-    color: "blue",
-    pinned: false,
-    order: 0,
-  });
-  const [errors, setErrors] = useState({});
-  const handleInput = (event) => {
-    let newInput = { ...input };
-    switch (event.target.name) {
-      case "pinned":
-        newInput[event.target.name] = !input[event.target.name];
-        break;
-      default:
-        newInput[event.target.name] = event.target.value;
-        break;
-    }
-    setInput({ ...newInput });
-  };
-  useEffect(() => {
-    console.log(input);
-  }, [input]);
-  const onSubmit = (e) => {
-    e.preventDefault();
-    if (!info.id) {
-      fetch("/api/posts", {
-        method: "POST",
-        body: JSON.stringify({ ...input, email: user.email }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-        .then((res) =>
-          res.json().then((resJson) => {
-            console.log(resJson);
-          })
-        )
-        .catch((e) => {
-          console.log(e);
-        });
-    }
-  };
   return (
     <Container color={info.color}>
       <span>{info.order}</span>
@@ -126,8 +81,8 @@ export function Post({ info }) {
       <p>{info.content}</p>
       <img alt={info.title} src={info.img} />
       <span>{`Ultima edicion: ${info.createdAt.substring(0, 10)}`}</span>
-      <button> <Delete /> </button>
-      <button> <Edit /> </button>
+      <button onClick={()=>{info.delete(info.id)}}> <Delete /> </button>
+      <button onClick={()=>{info.edit(info.index)}}> <Edit /> </button>
       {info.pinned && (<i><PinAngleFill /></i>)}
     </Container>
   );
