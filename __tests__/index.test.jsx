@@ -1,10 +1,10 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import Nav from "../components/Nav";
+import Nav from "../components/Header/Nav";
 import MyApp from "../pages/_app";
 import { createContext, useState } from "react";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
-import { Post } from "../components/Post";
+import { Post } from "../components/Post/Post";
 
 const theme = {
   colors: {

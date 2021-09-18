@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const Container = styled.div`
+export const FooterContainer = styled.div`
   background-color: ${(props) => props.theme.colors.primary};
   height: 50px;
   color: ${(props) => props.theme.colors.textSecondary};
@@ -11,16 +11,4 @@ const Container = styled.div`
   align-items: center;
   position: absolute;
   bottom: 0;
-  h1 {
-    letter-spacing: 1rem;
-    padding-left: 1rem;
-  }
 `;
-
-export default function Footer() {
-  return (
-    <Container>
-      <h1> * * * </h1>
-    </Container>
-  );
-}

@@ -1,3 +1,4 @@
+//ruta login, busca user y password en la base, de encontrarlos devuelve nombre y token
 const prisma = require("../../prisma/prisma");
 const jwt = require("jsonwebtoken");
 
