@@ -33,7 +33,7 @@ const postPostByUser = async (req, res) => {
 
 // R - GET
 const getPostsByUser = async (req, res) => {
-  const { email } = req.body;
+  const { email } = req.query;
   try {
     const user = await prisma.user.findFirst({
       where: { email: email },
@@ -85,7 +85,6 @@ const deletePostById = async (req, res) => {
 };
 
 export default function handler(req, res) {
-  console.log(req.body);
   if (req.method === "POST") {
     if (req.body.email) {
       console.log("here");
@@ -95,7 +94,7 @@ export default function handler(req, res) {
     }
   }
   if (req.method === "GET") {
-    if (req.body.email) {
+    if (req.query.email) {
       return getPostsByUser(req, res);
     } else {
       return res.status(200).json({ error: "Credenciales incorrectas" });

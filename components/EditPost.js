@@ -91,7 +91,6 @@ export function EditPost({ info }) {
           }).then((res) =>
             res.json().then((resJson) => {
               console.log(resJson);
-              console.log("submit");
             })
           ).catch((e)=>{console.log(e)});
     }
