@@ -16,7 +16,7 @@ const Container = styled.div`
   h2 {
     display: flex;
     aling-items: center;
-    justify-content:center;
+    justify-content: center;
     color: inherit;
     margin: 0 0 10px 0;
   }
@@ -50,19 +50,18 @@ const Container = styled.div`
   span {
     font-size: 0.8rem;
   }
-  hr{
-    width:100%;
+  hr {
+    width: 100%;
     border-top: 1px solid ${(props) => props.theme.colors.primary};
   }
 `;
 
 const ContainerTop = styled.div`
-  width:100%;
-  display:flex;
-  justify-content:space-around;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
   align-items: center;
 `;
-
 
 export default function Feed() {
   const { user, setUser } = useContext(userContext);
@@ -70,21 +69,30 @@ export default function Feed() {
   const [refresh, setRefresh] = useState(true);
   const [newPost, setNewPost] = useState(-2);
   const router = useRouter();
+
+  const sortPosts = (forSort) => {
+    forSort.sort((x, y) => parseFloat(x.order) - parseFloat(y.order));
+    forSort.sort((x, y) => {
+      return x.pinned === y.pinned ? 0 : x.pinned ? -1 : 1;
+    });
+    return forSort;
+  };
+
   useEffect(() => {
     if (!user) router.push("/", undefined, { shallow: true });
     else {
       if (refresh) {
         setRefresh(false);
-        fetch("/api/posts" , {
+        fetch("/api/posts", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            'Authorization': `Bearer ${user.token}`
+            Authorization: `Bearer ${user.token}`,
           },
         })
           .then((res) =>
             res.json().then((resJson) => {
-              setPosts(resJson);
+              setPosts(sortPosts([...resJson]));
               setNewPost(-2);
             })
           )
@@ -101,7 +109,7 @@ export default function Feed() {
       body: JSON.stringify({ id: id }),
       headers: {
         "Content-Type": "application/json",
-        'Authorization': `Bearer ${user.token}`
+        Authorization: `Bearer ${user.token}`,
       },
     })
       .then((res) => setRefresh(true))
@@ -110,21 +118,24 @@ export default function Feed() {
       });
   };
 
-  const editPost = (i) => {
-    setNewPost(i);
-  };
+
 
   return (
     <Container>
       <ContainerTop>
         <span>{`Bienvenido ${user.firstName} ${user.lastName}`}</span>
 
-        <button style={{ visibility:  newPost  === -1 ? "hidden" : "visible" }} onClick={() => setNewPost(-1)}>Nuevo Post</button>
+        <button
+          style={{ visibility: newPost === -1 ? "hidden" : "visible" }}
+          onClick={() => setNewPost(-1)}
+        >
+          Nuevo Post
+        </button>
 
-      <button onClick={() => setUser(false)}>Logout</button>
-    </ContainerTop>
-    <hr />
-    <h2>{posts.length > 0 ? "Feed" : "No hay posts"}</h2>
+        <button onClick={() => setUser(false)}>Logout</button>
+      </ContainerTop>
+      <hr />
+      <h2>{posts.length > 0 ? "Feed" : "No hay posts"}</h2>
       {newPost === -1 && <EditPost info={{ refresh: setRefresh }} />}
       {posts.map((p, i) =>
         i === newPost ? (

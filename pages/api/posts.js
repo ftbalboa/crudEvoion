@@ -55,7 +55,6 @@ const putPostById = async (req, res) => {
   keys.forEach((key) => {
     if (Object.keys(req.body).includes(key)) {
       if (key === "pinned") {
-        console.log(Boolean(req.body[key]));
         obj[key] = Boolean(req.body[key]);
       } else if (key === "order") {
         obj[key] = Number(req.body[key]);
