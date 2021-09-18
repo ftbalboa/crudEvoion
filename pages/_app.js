@@ -36,6 +36,10 @@ a {
 
 * {
   box-sizing: border-box;
+  &:focus {
+    outline: none !important;
+    box-shadow: 0 0 10px plum;
+  }
 }
 
 `;

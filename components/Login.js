@@ -7,7 +7,7 @@ import { userContext } from "../pages/_app";
 const Container = styled.div`
   background-color: transparent;
   color: ${(props) => props.theme.colors.primary};
-  height: 300px;
+  height: 500px;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -15,7 +15,7 @@ const Container = styled.div`
   align-items: center;
   h2 {
     color: ${(props) => props.theme.colors.primary};
-    margin: 0 0 10px 0;
+    margin: 0 0 20px 0;
   }
   form {
     display: flex;
@@ -80,7 +80,7 @@ export default function Login() {
   const submit = (e) => {
     e.preventDefault();
     if (validateEmail(input.email)) {
-      setErrors({...errors, email:null})
+      setErrors({ ...errors, email: null });
       fetch("/api/login", {
         method: "POST",
         body: JSON.stringify({ ...input }),
@@ -90,23 +90,36 @@ export default function Login() {
       })
         .then((res) =>
           res.json().then((resJson) => {
-            if(resJson.firstName){
-            setUser(resJson);}
-            else{setErrors({ ...errors,email:null, credenciales: "Credenciales incorrectas" });}
+            if (resJson.firstName) {
+              setUser(resJson);
+            } else {
+              setErrors({
+                ...errors,
+                email: null,
+                credenciales: "Credenciales incorrectas",
+              });
+            }
           })
         )
         .catch((e) => {
           console.log(e);
-          setErrors({ ...errors, email:null,credenciales: "Credenciales incorrectas" });
+          setErrors({
+            ...errors,
+            email: null,
+            credenciales: "Credenciales incorrectas",
+          });
         });
     } else {
-      setErrors({ ...errors, credenciales:null, email: "Formato email incorrecto" });
+      setErrors({
+        ...errors,
+        credenciales: null,
+        email: "Formato email incorrecto",
+      });
     }
   };
 
   return (
     <Container>
-            <span>{errors.credenciales && errors.credenciales}</span>
       <h2>Log in</h2>
       <form>
         <label>Email</label>
@@ -126,6 +139,7 @@ export default function Login() {
           onChange={handleInput}
           value={input.password}
         />
+        <span>{errors.credenciales && errors.credenciales}</span>
         <button onClick={submit}> SUBMIT </button>
       </form>
     </Container>
