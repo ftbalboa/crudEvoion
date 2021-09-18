@@ -1,3 +1,4 @@
+//ruta newUser, crea usuarios, en funcionamiento, no impolementada desde el front
 const prisma = require("../../prisma/prisma");
 
 const createUser = async (req, res) => {

@@ -1,24 +1,6 @@
-import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
-import { userContext } from "../pages/_app";
-import { PinAngleFill } from "@styled-icons/bootstrap";
-import { Delete } from "@styled-icons/material-rounded/Delete";
-import { Edit } from "@styled-icons/evaicons-solid";
 
-/*
-    - Titulo *
-    - Contenido *
-    - Fecha  *
-    - Imagen *
-    - Importante [Check box]
-    - Color [selector] *
-    - Numero de orden *
-
-    -Icon EDIT
-    -Icon DELETE
-*/
-
-const ContainerPost = styled.div.attrs((props) => ({
+export const PostContainer = styled.div.attrs((props) => ({
   color: props.color || props.theme.colors.primary,
 }))`
   background-color: transparent;
@@ -80,7 +62,7 @@ const ContainerPost = styled.div.attrs((props) => ({
   }
 `;
 
-const ContainerBot = styled.div.attrs((props) => ({
+export const PostContainerBot = styled.div.attrs((props) => ({
   color: props.color || props.theme.colors.primary,
 }))`
   width: 100%;
@@ -89,7 +71,7 @@ const ContainerBot = styled.div.attrs((props) => ({
   padding: 0 10px 0 10px;
 `;
 
-const IconContainer = styled.div.attrs((props) => ({
+export const IconContainer = styled.div.attrs((props) => ({
   color: props.color || props.theme.colors.primary,
 }))`
   position: absolute;
@@ -97,49 +79,10 @@ const IconContainer = styled.div.attrs((props) => ({
   left: 5px;
 `;
 
-const IconCorner = styled.i.attrs((props) => ({
+export const IconCorner = styled.i.attrs((props) => ({
   color: props.color || props.theme.colors.primary,
 }))`
   position: absolute;
   top: 5px;
   right: 5px;
 `;
-
-export function Post({ info }) {
-  return (
-    <ContainerPost color={info.color}>
-      <h2>{info.title}</h2>
-      <p>{info.content}</p>
-      <img alt={info.title} src={info.img} />
-      <IconContainer color={info.color}>
-        <button
-          className="iconButton"
-          onClick={() => {
-            info.delete(info.id);
-          }}
-        >
-          {" "}
-          <Delete />{" "}
-        </button>
-        <button
-          className="iconButton"
-          onClick={() => {
-            info.edit(info.index);
-          }}
-        >
-          {" "}
-          <Edit />{" "}
-        </button>
-      </IconContainer>
-      {info.pinned && (
-        <IconCorner>
-          <PinAngleFill />
-        </IconCorner>
-      )}
-      <ContainerBot>
-        <span>{`Orden: ${info.order}`}</span>
-        <span>{`${info.createdAt.substring(0, 10)}`}</span>
-      </ContainerBot>
-    </ContainerPost>
-  );
-}

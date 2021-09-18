@@ -1,55 +1,7 @@
-import { PinyinInput } from "@styled-icons/remix-editor";
 import { useRouter } from "next/dist/client/router";
 import { useContext, useEffect, useState } from "react";
-import styled from "styled-components";
-import { userContext } from "../pages/_app";
-
-const Container = styled.div`
-  background-color: transparent;
-  color: ${(props) => props.theme.colors.primary};
-  height: 500px;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  h2 {
-    color: ${(props) => props.theme.colors.primary};
-    margin: 0 0 20px 0;
-  }
-  form {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-  input {
-    margin: 5px;
-    border: 2px solid ${(props) => props.theme.colors.primary};
-    border-radius: 50px;
-    height: 1.5rem;
-    padding: 0 1rem 0 1rem;
-  }
-  button {
-    border: 2px solid ${(props) => props.theme.colors.primary};
-    border-radius: 50px;
-    color: ${(props) => props.theme.colors.primary};
-    background-color: ${(props) => props.theme.colors.textSecondary};
-    cursor: pointer;
-    width: 80px;
-    height: 1.5rem;
-    margin: 5px;
-    &:hover {
-      color: ${(props) => props.theme.colors.textSecondary};
-      background-color: ${(props) => props.theme.colors.primary};
-    }
-  }
-  span {
-    min-height: 1.5rem;
-    color: red;
-    font-size: 0.8rem;
-  }
-`;
+import { userContext } from "../../pages/_app";
+import { LoginContainer } from "../../styles/components/Login/Login";
 
 export default function Login() {
   const router = useRouter();
@@ -78,6 +30,7 @@ export default function Login() {
   };
 
   const submit = (e) => {
+    // realiza peticiones o muestra los errores
     e.preventDefault();
     if (validateEmail(input.email)) {
       setErrors({ ...errors, email: null });
@@ -119,7 +72,7 @@ export default function Login() {
   };
 
   return (
-    <Container>
+    <LoginContainer>
       <h2>Log in</h2>
       <form>
         <label>Email</label>
@@ -142,6 +95,6 @@ export default function Login() {
         <span>{errors.credenciales && errors.credenciales}</span>
         <button onClick={submit}> SUBMIT </button>
       </form>
-    </Container>
+    </LoginContainer>
   );
 }

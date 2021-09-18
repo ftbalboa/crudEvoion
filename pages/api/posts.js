@@ -1,3 +1,4 @@
+// Ruta posts
 const prisma = require("../../prisma/prisma");
 const jwt = require("jsonwebtoken");
 
