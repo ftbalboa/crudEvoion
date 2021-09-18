@@ -51,7 +51,20 @@ const ContainerPost = styled.div.attrs((props) => ({
     height: 1.5rem;
     padding: 0 1rem 0 1rem;
   }
-  button {
+
+  img {
+    border-radius: 100%;
+    height: 100px;
+    width: 100px;
+    border: 1px solid ${(props) => props.color};
+    margin-bottom: 10px;
+  }
+  i {
+    width: 40px;
+    height: 40px;
+    color: ${(props) => props.color};
+  }
+  .iconButton {
     border: 2px solid ${(props) => props.color};
     border-radius: 50px;
     color: ${(props) => props.color};
@@ -65,18 +78,6 @@ const ContainerPost = styled.div.attrs((props) => ({
       background-color: ${(props) => props.color};
     }
   }
-  img {
-    border-radius: 100%;
-    height: 100px;
-    width: 100px;
-    border: 1px solid ${(props) => props.color};
-    margin-bottom: 10px;
-  }
-  i {
-    width: 40px;
-    height: 40px;
-    color: ${(props) => props.color};
-  }
 `;
 
 const ContainerBot = styled.div.attrs((props) => ({
@@ -88,20 +89,13 @@ const ContainerBot = styled.div.attrs((props) => ({
   padding: 0 10px 0 10px;
 `;
 
-const ContainerCenter = styled.div.attrs((props) => ({
-  color: props.color || props.theme.colors.primary,
-}))`
-  width: 100%;
-  display: flex;
-  justify-content: space-around;
-  padding: 0 10px 0 10px;
-`;
-
 const IconContainer = styled.div.attrs((props) => ({
   color: props.color || props.theme.colors.primary,
-}))`  position: absolute;
-top: 5px;
-left: 5px;`;
+}))`
+  position: absolute;
+  top: 5px;
+  left: 5px;
+`;
 
 const IconCorner = styled.i.attrs((props) => ({
   color: props.color || props.theme.colors.primary,
@@ -117,8 +111,9 @@ export function Post({ info }) {
       <h2>{info.title}</h2>
       <p>{info.content}</p>
       <img alt={info.title} src={info.img} />
-      <IconContainer>
+      <IconContainer color={info.color}>
         <button
+          className="iconButton"
           onClick={() => {
             info.delete(info.id);
           }}
@@ -127,6 +122,7 @@ export function Post({ info }) {
           <Delete />{" "}
         </button>
         <button
+          className="iconButton"
           onClick={() => {
             info.edit(info.index);
           }}

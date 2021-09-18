@@ -11,7 +11,7 @@ import { userContext } from "../pages/_app";
     - Numero de orden
 */
 
-const Container = styled.div.attrs((props) => ({
+const EditContainer = styled.div.attrs((props) => ({
     color: props.color || props.theme.colors.primary,
   }))`
   background-color: transparent;
@@ -23,6 +23,7 @@ const Container = styled.div.attrs((props) => ({
   align-items: center;
   border: 2px solid ${(props) => props.color};
   border-radius: 20px;
+  padding: 10px;
   h2 {
     color: ${(props) => props.color};
   }
@@ -32,14 +33,16 @@ const Container = styled.div.attrs((props) => ({
     justify-content: center;
     align-items: center;
   }
-  input {
-    margin: 5px;
+  .inputEdit {
+    margin-bottom: 10px;
     border: 2px solid ${(props) => props.color};
     border-radius: 50px;
     height: 1.5rem;
     padding: 0 1rem 0 1rem;
+    width:100%;
+    text-align:center;
   }
-  button {
+  .buttonEdit {
     border: 2px solid ${(props) => props.color};
     border-radius: 50px;
     color: ${(props) => props.color};
@@ -53,6 +56,22 @@ const Container = styled.div.attrs((props) => ({
       background-color: ${(props) => props.color};
     }
   }
+  textarea{
+    height: 100px;
+    border-radius: 10px;
+    border: 2px solid ${(props) => props.color};
+    padding: .5rem;
+    margin-bottom:15px;
+  }
+  label{
+    margin-bottom:5px;
+  }
+`;
+
+const ContainerRow = styled.div.attrs((props) => ({
+  color: props.color || props.theme.colors.primary,
+}))`
+  padding: 0 10px 0 10px;
 `;
 
 export function EditPost({ info }) {
@@ -71,6 +90,14 @@ export function EditPost({ info }) {
     switch (event.target.name) {
       case "pinned":
         newInput[event.target.name] = !input[event.target.name];
+        break;
+      case "order":
+        if(!Number(event.target.value)) return
+        else {
+          if(event.target.value > 100) newInput[event.target.name] = 100
+          else if (event.target.value < 1) newInput[event.target.name] = 1
+          else newInput[event.target.name] = Math.floor(event.target.value);
+        }
         break;
       default:
         newInput[event.target.name] = event.target.value;
@@ -122,15 +149,16 @@ export function EditPost({ info }) {
     }
   };
   return (
-    <Container color={input.color}>
+    <EditContainer color={input.color}>
     <h2>{info.id?  `Editando post "${info.title}"` : "Crear post"}</h2>
-      <form onSubmit={onSubmit}>
+      <form>
         <label>Titulo</label>
         <input
           type="text"
           name="title"
           onChange={handleInput}
           value={input.title}
+          className="inputEdit"
         />
         <label>Contenido</label>
         <textarea
@@ -140,14 +168,14 @@ export function EditPost({ info }) {
           value={input.content}
         />
         <label>Imagen Url</label>
-        <input type="url" name="img" onChange={handleInput} value={input.img} />
+        <input type="url" name="img" onChange={handleInput} value={input.img} className="inputEdit"/>
         <label>Color</label>
-        <select name="color" onChange={handleInput} value={input.color}>
+        <select name="color" onChange={handleInput} value={input.color}className="inputEdit">
           <option value="blue">Blue</option>
           <option value="plum">Plum</option>
           <option value="red">Red</option>
         </select>
-        <label>Importante</label>
+        <label>Pin</label>
         <input
           type="checkbox"
           name="pinned"
@@ -160,16 +188,23 @@ export function EditPost({ info }) {
           name="order"
           onChange={handleInput}
           value={input.order}
+          min="1"
+          max="100"
+          step="1"
+          className="inputEdit"
         />
-        <button type="submit">SAVE</button>
       </form>
+    <ContainerRow>
+      <button onClick={onSubmit} className="buttonEdit">SAVE</button>
       <button
         onClick={() => {
           info.refresh(true);
         }}
+        className="buttonEdit"
       >
         CANCEL
       </button>
-    </Container>
+      </ContainerRow>
+    </EditContainer>
   );
 }
