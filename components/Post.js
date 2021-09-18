@@ -18,7 +18,7 @@ import { Edit } from "@styled-icons/evaicons-solid";
     -Icon DELETE
 */
 
-const Container = styled.div.attrs((props) => ({
+const ContainerPost = styled.div.attrs((props) => ({
   color: props.color || props.theme.colors.primary,
 }))`
   background-color: transparent;
@@ -31,9 +31,12 @@ const Container = styled.div.attrs((props) => ({
   border: 2px solid ${(props) => props.color};
   border-radius: 20px;
   overflow: hidden;
-  margin: 10px 0 10PX 0;
+  margin: 10px 0 10px 0;
+  padding: 10px;
+  position: relative;
   h2 {
     color: ${(props) => props.color};
+    padding: 0 120px 0 120px;
   }
   form {
     display: flex;
@@ -48,7 +51,20 @@ const Container = styled.div.attrs((props) => ({
     height: 1.5rem;
     padding: 0 1rem 0 1rem;
   }
-  button {
+
+  img {
+    border-radius: 100%;
+    height: 100px;
+    width: 100px;
+    border: 1px solid ${(props) => props.color};
+    margin-bottom: 10px;
+  }
+  i {
+    width: 40px;
+    height: 40px;
+    color: ${(props) => props.color};
+  }
+  .iconButton {
     border: 2px solid ${(props) => props.color};
     border-radius: 50px;
     color: ${(props) => props.color};
@@ -62,28 +78,68 @@ const Container = styled.div.attrs((props) => ({
       background-color: ${(props) => props.color};
     }
   }
-  img {
-    border-radius: 100%;
-    height: 100px;
-    width: 100px;
-  }
-  i{
-    width: 40px;
-    height: 40px;
-  }
+`;
+
+const ContainerBot = styled.div.attrs((props) => ({
+  color: props.color || props.theme.colors.primary,
+}))`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 10px 0 10px;
+`;
+
+const IconContainer = styled.div.attrs((props) => ({
+  color: props.color || props.theme.colors.primary,
+}))`
+  position: absolute;
+  top: 5px;
+  left: 5px;
+`;
+
+const IconCorner = styled.i.attrs((props) => ({
+  color: props.color || props.theme.colors.primary,
+}))`
+  position: absolute;
+  top: 5px;
+  right: 5px;
 `;
 
 export function Post({ info }) {
   return (
-    <Container color={info.color}>
-      <span>{info.order}</span>
+    <ContainerPost color={info.color}>
       <h2>{info.title}</h2>
       <p>{info.content}</p>
       <img alt={info.title} src={info.img} />
-      <span>{`Ultima edicion: ${info.createdAt.substring(0, 10)}`}</span>
-      <button onClick={()=>{info.delete(info.id)}}> <Delete /> </button>
-      <button onClick={()=>{info.edit(info.index)}}> <Edit /> </button>
-      {info.pinned && (<i><PinAngleFill /></i>)}
-    </Container>
+      <IconContainer color={info.color}>
+        <button
+          className="iconButton"
+          onClick={() => {
+            info.delete(info.id);
+          }}
+        >
+          {" "}
+          <Delete />{" "}
+        </button>
+        <button
+          className="iconButton"
+          onClick={() => {
+            info.edit(info.index);
+          }}
+        >
+          {" "}
+          <Edit />{" "}
+        </button>
+      </IconContainer>
+      {info.pinned && (
+        <IconCorner>
+          <PinAngleFill />
+        </IconCorner>
+      )}
+      <ContainerBot>
+        <span>{`Orden: ${info.order}`}</span>
+        <span>{`${info.createdAt.substring(0, 10)}`}</span>
+      </ContainerBot>
+    </ContainerPost>
   );
 }

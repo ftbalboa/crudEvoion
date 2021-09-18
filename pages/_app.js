@@ -1,5 +1,6 @@
 import { createContext, useState } from "react";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
+import Footer from "../components/Footer";
 import Nav from "../components/Nav";
 
 const theme = {
@@ -22,9 +23,10 @@ html{
 body{
   background-color:#fafafa;
   min-height:100vh;
-  padding: 1rem;
   margin-top:0;
   font-family:Verdana;
+  padding-bottom: 2.5rem;
+  position:relative;
 }
 
 a {
@@ -34,6 +36,10 @@ a {
 
 * {
   box-sizing: border-box;
+  &:focus {
+    outline: none !important;
+    box-shadow: 0 0 10px plum;
+  }
 }
 
 `;
@@ -52,6 +58,7 @@ function MyApp({ Component, pageProps }) {
         <userContext.Provider value={{user, setUser}}>
           <Nav />
           <Component {...pageProps} />
+          <Footer />
         </userContext.Provider>
       </ThemeProvider>
     </>
