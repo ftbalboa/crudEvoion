@@ -76,7 +76,7 @@ export default function Login() {
         console.log(resJson);
         setUser(resJson);
       })
-    );
+    ).catch((e)=>{console.log(e)});
   };
 
   return (
@@ -85,6 +85,7 @@ export default function Login() {
       <form>
         <label>Email</label>
         <input
+          type="email"
           maxLength="30"
           name="email"
           onChange={handleInput}

@@ -1,5 +1,6 @@
 import { useRouter } from "next/dist/client/router";
 import { useContext, useEffect } from "react";
+import { EditPost } from "../../components/EditPost";
 import { userContext } from "../_app";
 
 export default function Feed (){
@@ -12,6 +13,7 @@ export default function Feed (){
         <div>
         <span>{`Bienvenido ${user.firstName} ${user.lastName}`}</span>
         <button onClick={()=> setUser(false)}>Logout</button>
+        <EditPost info={{}}/>
         </div>
     )
 }

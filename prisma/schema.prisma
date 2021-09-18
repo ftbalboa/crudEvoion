@@ -12,8 +12,8 @@ generator client {
 // Modelos
 
 model User {
-  id        Int     @id @default(autoincrement())
-  email     String  @unique
+  id        Int    @id @default(autoincrement())
+  email     String @unique
   password  String
   firstName String
   lastName  String
@@ -26,6 +26,10 @@ model Post {
   id        Int      @id @default(autoincrement())
   title     String
   content   String
+  img       String
+  pinned    Boolean
+  color     String
+  order     Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   authorId  Int
