@@ -1,3 +1,4 @@
+import { PinyinInput } from "@styled-icons/remix-editor";
 import { useRouter } from "next/dist/client/router";
 import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
@@ -6,7 +7,7 @@ import { userContext } from "../pages/_app";
 const Container = styled.div`
   background-color: transparent;
   color: ${(props) => props.theme.colors.primary};
-  height: 200px;
+  height: 300px;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -14,6 +15,7 @@ const Container = styled.div`
   align-items: center;
   h2 {
     color: ${(props) => props.theme.colors.primary};
+    margin: 0 0 10px 0;
   }
   form {
     display: flex;
@@ -42,21 +44,26 @@ const Container = styled.div`
       background-color: ${(props) => props.theme.colors.primary};
     }
   }
+  span {
+    min-height: 1.5rem;
+    color: red;
+    font-size: 0.8rem;
+  }
 `;
 
 export default function Login() {
   const router = useRouter();
-  const {user, setUser} = useContext(userContext);
+  const { user, setUser } = useContext(userContext);
   const [input, setInput] = useState({ email: "", password: "" });
-  const [errors, setErrors] = useState({});
-  const mensajes = {
-    wrong: "Credenciales incorrectas",
-    email: "Debe ingresar un email válido",
-  };
+  const [errors, setErrors] = useState({
+    password: null,
+    email: null,
+    credenciales: null,
+  });
 
   useEffect(() => {
-    user && router.push('/feed', undefined, { shallow: true })
-  }, [user])
+    user && router.push("/feed", undefined, { shallow: true });
+  }, [user]);
 
   const handleInput = (event) => {
     let newInput = { ...input };
@@ -64,23 +71,42 @@ export default function Login() {
     setInput({ ...newInput });
   };
 
-  const submit = () => {
-    fetch("/api/login", {
-      method: "POST",
-      body: JSON.stringify({ ...input }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }).then((res) =>
-      res.json().then((resJson) => {
-        console.log(resJson);
-        setUser(resJson);
+  const validateEmail = (email) => {
+    const re =
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+  };
+
+  const submit = (e) => {
+    e.preventDefault();
+    if (validateEmail(input.email)) {
+      setErrors({...errors, email:null})
+      fetch("/api/login", {
+        method: "POST",
+        body: JSON.stringify({ ...input }),
+        headers: {
+          "Content-Type": "application/json",
+        },
       })
-    ).catch((e)=>{console.log(e)});
+        .then((res) =>
+          res.json().then((resJson) => {
+            if(resJson.firstName){
+            setUser(resJson);}
+            else{setErrors({ ...errors,email:null, credenciales: "Credenciales incorrectas" });}
+          })
+        )
+        .catch((e) => {
+          console.log(e);
+          setErrors({ ...errors, email:null,credenciales: "Credenciales incorrectas" });
+        });
+    } else {
+      setErrors({ ...errors, credenciales:null, email: "Formato email incorrecto" });
+    }
   };
 
   return (
     <Container>
+            <span>{errors.credenciales && errors.credenciales}</span>
       <h2>Log in</h2>
       <form>
         <label>Email</label>
@@ -91,6 +117,7 @@ export default function Login() {
           onChange={handleInput}
           value={input.email}
         />
+        <span>{errors.email && errors.email}</span>
         <label>Password</label>
         <input
           type="password"
@@ -99,8 +126,8 @@ export default function Login() {
           onChange={handleInput}
           value={input.password}
         />
+        <button onClick={submit}> SUBMIT </button>
       </form>
-      <button onClick={submit}> SUBMIT </button>
     </Container>
   );
 }
