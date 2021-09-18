@@ -15,7 +15,13 @@ export default function Feed() {
     else {
       if (refresh) {
         setRefresh(false);
-        fetch(`/api/posts?email=${user.email}`)
+        fetch("/api/posts" , {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            'Authorization': `Bearer ${user.token}`
+          },
+        })
           .then((res) =>
             res.json().then((resJson) => {
               setPosts(resJson);
@@ -35,6 +41,7 @@ export default function Feed() {
       body: JSON.stringify({ id: id }),
       headers: {
         "Content-Type": "application/json",
+        'Authorization': `Bearer ${user.token}`
       },
     })
       .then((res) => setRefresh(true))

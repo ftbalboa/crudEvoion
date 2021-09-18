@@ -1,4 +1,5 @@
 const prisma = require("../../prisma/prisma");
+const jwt = require("jsonwebtoken");
 
 const getUserByEmail = async (req, res) => {
   const { email, password } = req.body;
@@ -7,7 +8,13 @@ const getUserByEmail = async (req, res) => {
       where: { email: email },
     });
     if(user.password === password){
-    return res.json(user);}
+    const token = jwt.sign({id:user.id, email:user.email},process.env.TOKEN)
+    const forSend ={
+      token:token,
+      firstName:user.firstName,
+      lastName:user.lastName
+    }
+    return res.json(forSend);}
     else return res.status(404).json("userNotFound");
   } catch (error) {
     console.log(error);

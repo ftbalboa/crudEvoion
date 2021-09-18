@@ -84,9 +84,10 @@ export function EditPost({ info }) {
     if (!info.id) {
       fetch("/api/posts", {
         method: "POST",
-        body: JSON.stringify({ ...input, email: user.email }),
+        body: JSON.stringify({ ...input }),
         headers: {
           "Content-Type": "application/json",
+          'Authorization': `Bearer ${user.token}`
         },
       })
         .then((res) =>
@@ -107,6 +108,7 @@ export function EditPost({ info }) {
         body: JSON.stringify({ ...objPut, id: info.id }),
         headers: {
           "Content-Type": "application/json",
+          'Authorization': `Bearer ${user.token}`
         },
       })
         .then((res) =>

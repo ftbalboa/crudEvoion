@@ -1,15 +1,16 @@
 const prisma = require("../../prisma/prisma");
+const jwt = require("jsonwebtoken");
 
 // C - POST
 
-const postPostByUser = async (req, res) => {
-  const { email, title, content, img, color } = req.body;
+const postPostByUser = async (req, res, auth) => {
+  const { title, content, img, color } = req.body;
   let { pinned, order } = req.body;
   pinned = Boolean(pinned);
   order = Number(order);
   try {
-    const user = await prisma.user.findFirst({
-      where: { email: email },
+    const user = await prisma.user.findUnique({
+      where: { id: auth.id },
     });
     const post = await prisma.post.create({
       data: {
@@ -32,11 +33,10 @@ const postPostByUser = async (req, res) => {
 };
 
 // R - GET
-const getPostsByUser = async (req, res) => {
-  const { email } = req.query;
+const getPostsByUser = async (req, res, auth) => {
   try {
-    const user = await prisma.user.findFirst({
-      where: { email: email },
+    const user = await prisma.user.findUnique({
+      where: { id: auth.id },
       include: { Post: true },
     });
     return res.json(user.Post);
@@ -91,32 +91,30 @@ const deletePostById = async (req, res) => {
 };
 
 export default function handler(req, res) {
+  let auth = req.headers.authorization;
+  if (auth && auth.startsWith("Bearer")) auth = auth.substring(7);
+  else {
+    return res.status(401).json({ error: "Credenciales incorrectas" });
+  }
+  const decodeAuth = jwt.verify(auth, process.env.TOKEN);
   if (req.method === "POST") {
-    if (req.body.email) {
-      return postPostByUser(req, res);
-    } else {
-      return res.status(200).json({ error: "Credenciales incorrectas" });
-    }
+      return postPostByUser(req, res, decodeAuth);
   }
   if (req.method === "GET") {
-    if (req.query.email) {
-      return getPostsByUser(req, res);
-    } else {
-      return res.status(200).json({ error: "Credenciales incorrectas" });
-    }
+      return getPostsByUser(req, res, decodeAuth);
   }
   if (req.method === "PUT") {
     if (req.body.id) {
       return putPostById(req, res);
     } else {
-      return res.status(200).json({ error: "Credenciales incorrectas" });
+      return res.status(401).json({ error: "Credenciales incorrectas" });
     }
   }
   if (req.method === "DELETE") {
     if (req.body.id) {
       return deletePostById(req, res);
     } else {
-      return res.status(200).json({ error: "Credenciales incorrectas" });
+      return res.status(401).json({ error: "Credenciales incorrectas" });
     }
   }
   return res.status(404).json({ error: "Not found" });
